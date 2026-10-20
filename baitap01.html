@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="images/avatar.jpg">
+<title>Bài 1 - Danh sách sản phẩm</title><style>/* Khung chung: menu, màu, nút */
+*{box-sizing:border-box}
+:root{--bg:#fff;--alt:#f2f4f5;--ink:#14202b;--mut:#5a6772;--line:#d9dfe3;--ac:#0f6b62;--bad:#b42318;--f:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--m:ui-monospace,Menlo,Consolas,monospace}
+body{margin:0;font:16px/1.65 var(--f);color:var(--ink);background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{line-height:1.2;letter-spacing:-.01em}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:2.5rem 0 .75rem}h2{font-size:1.4rem;margin:2.5rem 0 .75rem}h3{font-size:1.1rem;margin:1.5rem 0 .5rem}
+a{color:var(--ac)}main p,main li{max-width:75ch}
+.lead{color:var(--mut);max-width:62ch;margin:0 0 1.5rem}
+header.top{border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{font-weight:700;color:var(--ink);text-decoration:none}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+.nav a{display:block;padding:8px 0;color:var(--mut);text-decoration:none;font-size:.95rem}
+.nav a:hover{color:var(--ink)}.nav a[aria-current]{color:var(--ac);font-weight:600}
+.toggle{display:none}
+@media(max-width:1099px){.toggle{display:block}.nav{display:none;width:100%}.nav.open{display:block}.nav ul{flex-direction:column;gap:0;padding-bottom:12px}}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:4px;padding:10px 18px;background:var(--ac);color:#fff;text-decoration:none;display:inline-block}
+button.ghost{background:var(--alt);color:var(--ink)}button:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+input[type=text],input[type=email],input[type=password],input[type=search]{width:100%;font:inherit;padding:10px 12px;border:1px solid #aeb8bf;border-radius:4px;background:#fff;color:var(--ink)}
+label{display:block;font-weight:600;margin-bottom:6px}
+.err{color:var(--bad);margin:6px 0 0;min-height:1.2em;font-size:.9rem}
+.box{padding:14px 16px;border-radius:6px;background:var(--alt)}.box.bad{background:#fdecea;color:#7a1710}.box.ok{background:#e4f3ee;color:#0b4a43}
+pre{background:var(--alt);padding:14px 16px;border-radius:6px;overflow-x:auto;font:14px/1.5 var(--m)}
+code{font-family:var(--m);font-size:.92em;background:var(--alt);padding:1px 5px;border-radius:3px}pre code{background:none;padding:0}
+table{border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--alt)}
+.list a{display:block;padding:14px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}.list a:hover b{color:var(--ac)}.list span{display:block;color:var(--mut);font-size:.95rem}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px}dl.facts dt{color:var(--mut)}dl.facts dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:560px){dl.facts{grid-template-columns:1fr;gap:0}dl.facts dd{margin-bottom:12px}}
+.about{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}.av{width:200px;height:200px;border-radius:8px;background:var(--alt);overflow:hidden}.av img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:640px){.about{grid-template-columns:1fr}}
+.explain{margin-top:3rem}.explain li{margin-bottom:.4rem}
+footer.wrap{margin:4rem auto 2rem;color:var(--mut);font-size:.9rem}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:1.5rem}
+.shot{display:block;aspect-ratio:16/10;overflow:hidden;border-radius:6px;background:var(--alt);border:1px solid var(--line)}.shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}.shot:hover img{transform:scale(1.03)}
+.shots section{display:flex;flex-direction:column;align-items:flex-start}.shots section>.shot{align-self:stretch}.shots h2{margin:1rem 0 .25rem}.shots p{margin:0 0 1rem;flex:1}
+figure.result{margin:1.5rem 0}figure.result img{max-width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:6px}figure.result figcaption{color:var(--mut);font-size:.95rem;margin-top:8px}
+/* Riêng từng bài */
+.row{display:flex;gap:8px}.grid{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.p{background:var(--alt);border-radius:8px;padding:12px}.th{height:110px;border-radius:4px;display:flex;align-items:flex-end;padding:8px;font-size:.85rem;color:#33424e}
+.p h3{font-size:1rem;margin:12px 0 4px}.price{margin:0;font-weight:700}</style></head><body>
+<header class="top"><div class="wrap bar"><a class="brand" href="index.html">Thanh Bảo</a>
+<button class="toggle ghost" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+<nav class="nav" id="menu" aria-label="Menu chính"><ul><li><a href="index.html">Trang chủ</a></li><li><a href="about.html">Giới thiệu</a></li><li><a href="contact.html">Liên hệ</a></li><li><a href="baitap01.html" aria-current="page">Bài 1</a></li><li><a href="baitap02.html">Bài 2</a></li><li><a href="baitap03.html">Bài 3</a></li><li><a href="lythuyet.html">Lý thuyết</a></li><li><a href="baitap23.html">Bài tập 23</a></li><li><a href="baitap22.html">Bài tập 22</a></li><li><a href="diemdanh.html">Điểm danh</a></li></ul></nav></div></header>
+<main class="wrap">
+<h1>Danh sách sản phẩm</h1><p class="lead">Dữ liệu minh họa lấy từ mảng JavaScript. Gõ tên sản phẩm để lọc, không phân biệt hoa thường.</p>
+<form id="sf" role="search" autocomplete="off"><label for="q">Tìm theo tên sản phẩm</label>
+<div class="row"><input id="q" type="search" maxlength="50" placeholder="Ví dụ: logitech, ssd, bàn phím"><button type="submit">Tìm</button><button type="button" id="cl" class="ghost" hidden>Xóa</button></div></form>
+<p id="st" role="status" aria-live="polite" class="lead"></p><div id="er" class="box bad" role="alert" hidden></div>
+<ul id="grid" class="grid"></ul>
+<section class="explain"><h2>Giải thích logic tư duy</h2>
+<h3>Luồng xử lý</h3><p>Mảng <code>PRODUCTS</code> là nguồn dữ liệu duy nhất. Mỗi lần người dùng gõ hoặc bấm Tìm, hàm <code>search()</code> lọc mảng rồi <code>render()</code> vẽ lại danh sách.</p>
+<h3>Xử lý input để tránh injection</h3><ul>
+<li>Từ khóa chỉ được đưa vào <code>textContent</code>, không bao giờ vào <code>innerHTML</code>. Chuỗi như <code>&lt;img src=x onerror=alert(1)&gt;</code> được hiển thị đúng như văn bản, không bị trình duyệt phân tích thành HTML, nên không xảy ra XSS (Cross-Site Scripting).</li>
+<li>Thẻ sản phẩm dựng bằng <code>createElement</code>, không nối chuỗi HTML.</li>
+<li>So khớp bằng <code>String.includes()</code> thay vì tạo <code>RegExp</code> từ input, tránh lỗi cú pháp và ReDoS (tấn công làm treo bằng regex).</li>
+<li>Từ khóa được <code>trim()</code>, gộp khoảng trắng và giới hạn <code>maxlength=50</code>.</li></ul>
+<h3>Tối ưu tìm kiếm</h3><ul>
+<li>Tên sản phẩm được đổi sang chữ thường một lần khi tải trang (trường <code>key</code>); mỗi lần tìm chỉ đổi từ khóa.</li>
+<li>Debounce 200 ms: dừng gõ rồi mới lọc, không lọc ở mỗi phím.</li>
+<li><code>DocumentFragment</code> và <code>replaceChildren()</code> cập nhật DOM một lần, giảm reflow (tính lại bố cục).</li></ul>
+<h3>Trường hợp đặc biệt</h3><p>Ô trống thì hiện toàn bộ. Không có kết quả thì hiện thông báo lỗi <code>role="alert"</code> để trình đọc màn hình đọc ngay. Bố cục dùng CSS Grid <code>repeat(auto-fill, minmax(220px, 1fr))</code> nên tự co giãn theo màn hình.</p></section>
+</main>
+<footer class="wrap">Đề thi kết thúc học phần Lập trình Web, đề số 1. Nguyễn Thanh Bảo, MSSV 231A010126.</footer>
+<script>(()=>{const b=document.querySelector('.toggle'),n=document.getElementById('menu');if(b&&n){const s=o=>{n.classList.toggle('open',o);b.setAttribute('aria-expanded',o)};b.addEventListener('click',()=>s(!n.classList.contains('open')));document.addEventListener('keydown',e=>{if(e.key==='Escape')s(false)});}})();
+const PRODUCTS=[
+{name:'Bàn phím cơ Keychron K2',cat:'Phụ kiện',price:2290000,tint:'#dde7ea'},
+{name:'Chuột không dây Logitech MX Master 3S',cat:'Phụ kiện',price:2490000,tint:'#e0e8de'},
+{name:'Tai nghe Sony WH-1000XM5',cat:'Âm thanh',price:7490000,tint:'#e4e1ec'},
+{name:'Màn hình Dell U2723QE 27 inch',cat:'Màn hình',price:11990000,tint:'#dce5f1'},
+{name:'Ổ cứng SSD Samsung 980 Pro 1TB',cat:'Lưu trữ',price:2790000,tint:'#ebe5d9'},
+{name:'Webcam Logitech C920',cat:'Phụ kiện',price:1490000,tint:'#e5e7ea'},
+{name:'Hub USB-C Anker 7 in 1',cat:'Kết nối',price:1090000,tint:'#e3ecec'},
+{name:'Loa Bluetooth JBL Flip 6',cat:'Âm thanh',price:2690000,tint:'#e8e2e0'}];
+const items=PRODUCTS.map(p=>({...p,key:p.name.toLowerCase()}));
+const money=new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND'});
+const $=id=>document.getElementById(id),input=$('q'),grid=$('grid'),er=$('er'),st=$('st'),cl=$('cl');
+function render(list){const f=document.createDocumentFragment();
+for(const p of list){const li=document.createElement('li');li.className='p';
+const th=document.createElement('div');th.className='th';th.style.background=p.tint;th.textContent=p.cat;
+const h=document.createElement('h3');h.textContent=p.name;
+const pr=document.createElement('p');pr.className='price';pr.textContent=money.format(p.price);
+li.append(th,h,pr);f.append(li);}
+grid.replaceChildren(f);}
+function search(){const raw=input.value.trim().replace(/\s+/g,' '),q=raw.toLowerCase();
+const res=q?items.filter(p=>p.key.includes(q)):items;render(res);cl.hidden=!input.value;
+if(!res.length){er.textContent='Không tìm thấy sản phẩm nào khớp với “'+raw+'”. Hãy thử từ khóa khác.';er.hidden=false;st.textContent='';}
+else{er.hidden=true;st.textContent=q?'Tìm thấy '+res.length+' trên '+items.length+' sản phẩm.':'Hiển thị '+items.length+' sản phẩm.';}}
+const debounce=(fn,ms)=>{let t;return()=>{clearTimeout(t);t=setTimeout(fn,ms);};};
+input.addEventListener('input',debounce(search,200));
+$('sf').addEventListener('submit',e=>{e.preventDefault();search();});
+cl.addEventListener('click',()=>{input.value='';search();input.focus();});
+search();</script>
+</body></html>

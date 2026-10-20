@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="images/avatar.jpg">
+<title>Bài 3 - Đồng hồ đếm ngược</title><style>/* Khung chung: menu, màu, nút */
+*{box-sizing:border-box}
+:root{--bg:#fff;--alt:#f2f4f5;--ink:#14202b;--mut:#5a6772;--line:#d9dfe3;--ac:#0f6b62;--bad:#b42318;--f:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--m:ui-monospace,Menlo,Consolas,monospace}
+body{margin:0;font:16px/1.65 var(--f);color:var(--ink);background:var(--bg)}
+.wrap{max-width:1080px;margin:0 auto;padding:0 20px}
+h1,h2,h3{line-height:1.2;letter-spacing:-.01em}
+h1{font-size:clamp(1.8rem,4vw,2.6rem);margin:2.5rem 0 .75rem}h2{font-size:1.4rem;margin:2.5rem 0 .75rem}h3{font-size:1.1rem;margin:1.5rem 0 .5rem}
+a{color:var(--ac)}main p,main li{max-width:75ch}
+.lead{color:var(--mut);max-width:62ch;margin:0 0 1.5rem}
+header.top{border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;flex-wrap:wrap}
+.brand{font-weight:700;color:var(--ink);text-decoration:none}
+.nav ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 18px}
+.nav a{display:block;padding:8px 0;color:var(--mut);text-decoration:none;font-size:.95rem}
+.nav a:hover{color:var(--ink)}.nav a[aria-current]{color:var(--ac);font-weight:600}
+.toggle{display:none}
+@media(max-width:1099px){.toggle{display:block}.nav{display:none;width:100%}.nav.open{display:block}.nav ul{flex-direction:column;gap:0;padding-bottom:12px}}
+button,.btn{font:inherit;cursor:pointer;border:0;border-radius:4px;padding:10px 18px;background:var(--ac);color:#fff;text-decoration:none;display:inline-block}
+button.ghost{background:var(--alt);color:var(--ink)}button:disabled{opacity:.5;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+input[type=text],input[type=email],input[type=password],input[type=search]{width:100%;font:inherit;padding:10px 12px;border:1px solid #aeb8bf;border-radius:4px;background:#fff;color:var(--ink)}
+label{display:block;font-weight:600;margin-bottom:6px}
+.err{color:var(--bad);margin:6px 0 0;min-height:1.2em;font-size:.9rem}
+.box{padding:14px 16px;border-radius:6px;background:var(--alt)}.box.bad{background:#fdecea;color:#7a1710}.box.ok{background:#e4f3ee;color:#0b4a43}
+pre{background:var(--alt);padding:14px 16px;border-radius:6px;overflow-x:auto;font:14px/1.5 var(--m)}
+code{font-family:var(--m);font-size:.92em;background:var(--alt);padding:1px 5px;border-radius:3px}pre code{background:none;padding:0}
+table{border-collapse:collapse;display:block;overflow-x:auto}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:var(--alt)}
+.list a{display:block;padding:14px 0;border-bottom:1px solid var(--line);color:var(--ink);text-decoration:none}.list a:hover b{color:var(--ac)}.list span{display:block;color:var(--mut);font-size:.95rem}
+dl.facts{display:grid;grid-template-columns:max-content 1fr;gap:10px 28px}dl.facts dt{color:var(--mut)}dl.facts dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:560px){dl.facts{grid-template-columns:1fr;gap:0}dl.facts dd{margin-bottom:12px}}
+.about{display:grid;grid-template-columns:200px 1fr;gap:32px;align-items:start}.av{width:200px;height:200px;border-radius:8px;background:var(--alt);overflow:hidden}.av img{width:100%;height:100%;object-fit:cover;display:block}
+@media(max-width:640px){.about{grid-template-columns:1fr}}
+.explain{margin-top:3rem}.explain li{margin-bottom:.4rem}
+footer.wrap{margin:4rem auto 2rem;color:var(--mut);font-size:.9rem}
+.shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px;margin-top:1.5rem}
+.shot{display:block;aspect-ratio:16/10;overflow:hidden;border-radius:6px;background:var(--alt);border:1px solid var(--line)}.shot img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s}.shot:hover img{transform:scale(1.03)}
+.shots section{display:flex;flex-direction:column;align-items:flex-start}.shots section>.shot{align-self:stretch}.shots h2{margin:1rem 0 .25rem}.shots p{margin:0 0 1rem;flex:1}
+figure.result{margin:1.5rem 0}figure.result img{max-width:100%;height:auto;display:block;border:1px solid var(--line);border-radius:6px}figure.result figcaption{color:var(--mut);font-size:.95rem;margin-top:8px}
+/* Riêng từng bài */
+.disp{display:inline-block;font:700 clamp(3.5rem,14vw,7rem)/1 var(--f);font-variant-numeric:tabular-nums;margin:1.5rem 0 .5rem}
+.disp.warn{color:var(--bad);animation:pulse 1s ease-in-out infinite}@keyframes pulse{50%{transform:scale(1.06)}}
+@media(prefers-reduced-motion:reduce){.disp.warn{animation:none}}
+.acts{display:flex;gap:8px;flex-wrap:wrap}dialog{border:0;border-radius:10px;padding:24px 28px;max-width:min(420px,90vw)}dialog::backdrop{background:rgba(20,32,43,.55)}</style></head><body>
+<header class="top"><div class="wrap bar"><a class="brand" href="index.html">Thanh Bảo</a>
+<button class="toggle ghost" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+<nav class="nav" id="menu" aria-label="Menu chính"><ul><li><a href="index.html">Trang chủ</a></li><li><a href="about.html">Giới thiệu</a></li><li><a href="contact.html">Liên hệ</a></li><li><a href="baitap01.html">Bài 1</a></li><li><a href="baitap02.html">Bài 2</a></li><li><a href="baitap03.html" aria-current="page">Bài 3</a></li><li><a href="lythuyet.html">Lý thuyết</a></li><li><a href="baitap23.html">Bài tập 23</a></li><li><a href="baitap22.html">Bài tập 22</a></li><li><a href="diemdanh.html">Điểm danh</a></li></ul></nav></div></header>
+<main class="wrap">
+<h1>Đồng hồ đếm ngược</h1><p class="lead">Đồng hồ tự chạy từ 10 phút khi mở trang. Khi còn dưới 1 phút, số đổi màu và nhấp nháy; hết giờ sẽ hiện hộp thoại thông báo.</p>
+<div id="disp" class="disp" role="timer" aria-label="Thời gian còn lại">10:00</div><p id="state" class="lead">Sẵn sàng</p>
+<div class="acts"><button id="start" type="button">Bắt đầu</button><button id="pause" type="button" class="ghost" disabled>Tạm dừng</button><button id="reset" type="button" class="ghost">Đặt lại</button></div>
+<p class="lead" style="margin-top:20px">Thử nhanh hiệu ứng và hộp thoại:</p><div class="acts"><button type="button" class="ghost" data-s="65">Bắt đầu từ 01:05</button><button type="button" class="ghost" data-s="10">Bắt đầu từ 00:10</button><button type="button" class="ghost" data-s="600">Chạy lại từ 10:00</button></div>
+<dialog id="done" aria-labelledby="dt"><h2 id="dt" style="margin-top:0">Hết giờ</h2><p>Thời gian đếm ngược đã kết thúc.</p><div class="acts"><button type="button" id="again">Đếm lại</button><button type="button" id="close" class="ghost">Đóng</button></div></dialog>
+<section class="explain"><h2>Giải thích logic tư duy</h2>
+<h3>Cách đếm thời gian</h3><p>Không trừ biến đếm mỗi giây, vì <code>setInterval</code> có thể trễ và bị trình duyệt giảm tần suất khi tab chạy nền. Thay vào đó lưu mốc kết thúc <code>endAt = Date.now() + remainingMs</code>, mỗi 250 ms tính lại <code>endAt - Date.now()</code> và chỉ cập nhật DOM khi số giây hiển thị thay đổi. Nhờ vậy đồng hồ không bị lệch dần.</p>
+<h3>Xử lý interval để tránh memory leak</h3><ul>
+<li>Lưu id của interval vào biến <code>timerId</code>. Hàm <code>start()</code> kiểm tra <code>timerId !== null</code> trước khi tạo mới, nên bấm Bắt đầu nhiều lần không sinh ra nhiều interval chồng nhau (mỗi interval giữ callback và closure trong bộ nhớ và làm đồng hồ chạy nhanh gấp bội).</li>
+<li>Gọi <code>clearInterval</code> ở mọi điểm dừng: tạm dừng, đặt lại, hết giờ và khi rời trang (<code>pagehide</code>).</li>
+<li>Các listener chỉ gắn một lần lúc tải trang, không gắn thêm trong mỗi lần tick.</li></ul>
+<h3>Animation và modal</h3><p>Khi còn dưới 60 giây, JS thêm class <code>warn</code>; CSS dùng <code>@keyframes</code> chỉ đổi <code>transform</code> nên không gây reflow, và tắt hiệu ứng nếu người dùng bật <code>prefers-reduced-motion</code>. Hộp thoại dùng thẻ <code>&lt;dialog&gt;</code> với <code>showModal()</code>: có sẵn lớp nền, giữ focus bên trong và đóng bằng phím Esc.</p>
+<h3>Tích hợp với domain và hosting</h3><p>Hosting tĩnh như GitHub Pages chỉ phát file, toàn bộ việc đếm chạy trên máy người dùng, mà đồng hồ máy có thể sai hoặc bị chỉnh tay. Nếu cần chính xác (ví dụ thi online), phải lấy giờ từ server qua header <code>Date</code> của phản hồi HTTP và tính độ lệch:</p>
+<pre><code>const t0 = Date.now();
+const res = await fetch(location.href, { method: 'HEAD', cache: 'no-store' });
+const serverNow = new Date(res.headers.get('Date')).getTime();
+const offset = serverNow - (t0 + Date.now()) / 2;  // độ lệch client so với server
+const now = () => Date.now() + offset;             // dùng thay cho Date.now()</code></pre>
+<p>Header <code>Date</code> chỉ chính xác đến 1 giây và cần chạy qua http hoặc https, không chạy khi mở file trực tiếp.</p></section>
+</main>
+<footer class="wrap">Đề thi kết thúc học phần Lập trình Web, đề số 1. Nguyễn Thanh Bảo, MSSV 231A010126.</footer>
+<script>(()=>{const b=document.querySelector('.toggle'),n=document.getElementById('menu');if(b&&n){const s=o=>{n.classList.toggle('open',o);b.setAttribute('aria-expanded',o)};b.addEventListener('click',()=>s(!n.classList.contains('open')));document.addEventListener('keydown',e=>{if(e.key==='Escape')s(false)});}})();
+(()=>{const $=id=>document.getElementById(id),disp=$('disp'),state=$('state'),bS=$('start'),bP=$('pause'),dlg=$('done');
+const DEF=600,WARN=60;let total=DEF,left=DEF*1000,endAt=0,timerId=null,shown=-1;
+const pad=n=>String(n).padStart(2,'0'),fmt=s=>pad(Math.floor(s/60))+':'+pad(s%60);
+function paint(s){if(s===shown)return;shown=s;disp.textContent=fmt(s);disp.classList.toggle('warn',s>0&&s<WARN);}
+function ui(k){const m={idle:['Sẵn sàng','Bắt đầu'],run:['Đang chạy','Bắt đầu'],pause:['Tạm dừng','Tiếp tục'],done:['Đã hết giờ','Bắt đầu']}[k];
+state.textContent=m[0];bS.textContent=m[1];bS.disabled=k==='run'||k==='done';bP.disabled=k!=='run';}
+function stop(){if(timerId!==null){clearInterval(timerId);timerId=null;}}
+function tick(){const l=endAt-Date.now();if(l<=0){finish();return;}left=l;paint(Math.ceil(l/1000));}
+function start(){if(timerId!==null)return;endAt=Date.now()+left;timerId=setInterval(tick,250);tick();ui('run');}
+function pause(){if(timerId===null)return;left=Math.max(0,endAt-Date.now());stop();ui('pause');}
+function reset(s=total){stop();total=s;left=s*1000;shown=-1;paint(s);ui('idle');if(dlg.open)dlg.close();}
+function finish(){stop();left=0;shown=-1;paint(0);ui('done');if(!dlg.open)dlg.showModal();}
+bS.addEventListener('click',start);bP.addEventListener('click',pause);$('reset').addEventListener('click',()=>reset(DEF));
+document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>{reset(+b.dataset.s);start();}));
+$('again').addEventListener('click',()=>{reset(DEF);start();});$('close').addEventListener('click',()=>dlg.close());
+window.addEventListener('pagehide',stop);reset(DEF);start();})();</script>
+</body></html>
